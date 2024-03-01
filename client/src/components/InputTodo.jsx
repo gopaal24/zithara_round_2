@@ -3,8 +3,8 @@ import { useState } from "react";
 
 function InputTodo() {
   const [c_name, setC_name] = useState("");
-  const [age, setAge] = useState();
-  const [phone, setPhone] = useState();
+  const [age, setAge] = useState("");
+  const [phone, setPhone] = useState("");
   const [loc, setLoc] = useState("");
 
   const handleSubmit = async (e) => {

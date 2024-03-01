@@ -1,5 +1,6 @@
 import './App.css'
 import InputTodo from './components/InputTodo'
+import ListTodo from './components/ListTodo'
 
 function App() {
 
@@ -7,6 +8,7 @@ function App() {
     <>
       <h1>Hello World</h1>
       <InputTodo/>
+      <ListTodo/>
     </>
   )
 }
