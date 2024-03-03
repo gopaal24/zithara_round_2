@@ -6,6 +6,7 @@ const app = express();
 
 const port = 3000;
 
+// middleware for Cross-Origin resourse sharing
 app.use(cors());
 app.use(express.json());
 
