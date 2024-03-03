@@ -6,6 +6,7 @@ function InputField({ isCollapsed, setIsCollapsed }) {
   const [phone, setPhone] = useState("");
   const [loc, setLoc] = useState("");
 
+  // Function to handle submition of the form
   const handleSubmit = async (e) => {
     e.preventDefault();
     const created_at = new Date().toLocaleString();

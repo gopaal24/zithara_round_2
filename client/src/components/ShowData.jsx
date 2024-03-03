@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import InputField from "./InputField";
 
 function ShowData() {
+  // State to store the data of the Table
   const [Data, setData] = useState([]);
+
+  // States for sorting of the column
   const [order, setOrder] = useState("ASC");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // State and variables for Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 20;
   const lastIndex = currentPage * recordsPerPage;
@@ -13,8 +18,10 @@ function ShowData() {
   const npage = Math.ceil(Data.length / recordsPerPage);
   const number = [...Array(npage + 1).keys()].slice(1);
 
+  // State of input form field
   const [isCollapsed, setIsCollapsed] = useState(true);
 
+  // Function to fetch data from the api
   const getData = async () => {
     try {
       const response = await fetch("http://localhost:3000/data");
@@ -25,6 +32,7 @@ function ShowData() {
     }
   };
 
+  // Function to sort column
   const sorting = (col) => {
     const sortOrder = order === "ASC" ? "DSC" : "ASC";
     const sortedData = [...Data].sort((a, b) => {
@@ -48,6 +56,7 @@ function ShowData() {
     setOrder(sortOrder);
   };
 
+  // Functions that determine the active state and functioning of Pagination
   function prePage() {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -64,11 +73,13 @@ function ShowData() {
     }
   }
 
+  // UseEffect to rerender the data when some data is added
   useEffect(() => {
     getData();
   }, []);
 
   return (
+    // Element for Filtering
     <div className="container mx-auto p-4 w-full">
       <div className="flex mb-4 items-center">
         <label htmlFor="search" className="mr-2 text-lg font-medium font-serif">
@@ -82,6 +93,7 @@ function ShowData() {
           placeholder="Filter by Customer Name or Location"
           className="px-2 py-1 border rounded mr-2 flex-grow font-serif"
         />
+        {/* Collapse and Extension of input field */}
         <button
           className="bg-yellow-400 font-bold p-2 border rounded hover:bg-white hover:border-yellow-500 focus:outline-none "
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -92,8 +104,10 @@ function ShowData() {
 
       <InputField isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
+      {/* Table Element */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 shadow">
+          {/* Headings of the Columns */}
           <thead>
             <tr className="bg-gray-200">
               <th
@@ -102,12 +116,7 @@ function ShowData() {
               >
                 Sno
               </th>
-              <th
-                onClick={() => sorting("c_name")}
-                className="py-2 px-4 cursor-pointer font-serif"
-              >
-                Customer Name
-              </th>
+              <th className="py-2 px-4 cursor-pointer font-serif">Customer Name</th>
               <th className="py-2 px-4 font-serif">Age</th>
               <th className="py-2 px-4 font-serif">Mobile Number</th>
               <th className="py-2 px-4 font-serif">Address</th>
@@ -119,6 +128,7 @@ function ShowData() {
               </th>
             </tr>
           </thead>
+          {/* Mapping and filtering of the data using .map()  and .filter() methods */}
           <tbody>
             {records
               .filter((data) => {
@@ -154,6 +164,7 @@ function ShowData() {
         </table>
       </div>
 
+      {/* Elements of pagination */}
       <nav className="flex justify-center my-4">
         <ul className="flex space-x-2">
           <li>
