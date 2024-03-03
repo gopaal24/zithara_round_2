@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import InputField from "./InputField"; 
+import InputField from "./InputField";
 
 function ShowData() {
   const [Data, setData] = useState([]);
@@ -13,7 +13,7 @@ function ShowData() {
   const npage = Math.ceil(Data.length / recordsPerPage);
   const number = [...Array(npage + 1).keys()].slice(1);
 
-  const [isCollapsed, setIsCollapsed] = useState(true); 
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const getData = async () => {
     try {
@@ -48,10 +48,6 @@ function ShowData() {
     setOrder(sortOrder);
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
   function prePage() {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -68,26 +64,33 @@ function ShowData() {
     }
   }
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 w-full">
       <div className="flex mb-4 items-center">
-        <label htmlFor="search" className="mr-2 text-lg font-medium">Search:</label>
+        <label htmlFor="search" className="mr-2 text-lg font-medium font-serif">
+          Filter:
+        </label>
         <input
           type="text"
           id="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="px-2 py-1 border rounded mr-2 flex-grow" 
+          placeholder="Filter by Customer Name or Location"
+          className="px-2 py-1 border rounded mr-2 flex-grow font-serif"
         />
         <button
-          className="bg-gray-300 p-2 border rounded hover:bg-gray-400 focus:outline-none"
-          onClick={() => setIsCollapsed(!isCollapsed)} 
+          className="bg-yellow-400 font-bold p-2 border rounded hover:bg-white hover:border-yellow-500 focus:outline-none "
+          onClick={() => setIsCollapsed(!isCollapsed)}
         >
           {isCollapsed ? "Add Record" : "Collapse Form"}
         </button>
       </div>
 
-      <InputField isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} /> 
+      <InputField isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 shadow">
@@ -95,19 +98,19 @@ function ShowData() {
             <tr className="bg-gray-200">
               <th
                 onClick={() => sorting("id")}
-                className="py-2 px-4 cursor-pointer"
+                className="py-2 px-4 cursor-pointer font-serif"
               >
                 Sno
               </th>
               <th
                 onClick={() => sorting("c_name")}
-                className="py-2 px-4 cursor-pointer"
+                className="py-2 px-4 cursor-pointer font-serif"
               >
                 Customer Name
               </th>
-              <th className="py-2 px-4">Age</th>
-              <th className="py-2 px-4">Mobile Number</th>
-              <th className="py-2 px-4">Address</th>
+              <th className="py-2 px-4 font-serif">Age</th>
+              <th className="py-2 px-4 font-serif">Mobile Number</th>
+              <th className="py-2 px-4 font-serif">Address</th>
               <th
                 onClick={() => sorting("created_at")}
                 className="py-2 px-4 cursor-pointer"
@@ -117,19 +120,36 @@ function ShowData() {
             </tr>
           </thead>
           <tbody>
-            {records.map((data, index) => (
-              <tr
-                key={data.id}
-                className={index % 2 === 0 ? "bg-gray-100" : ""}
-              >
-                <td className="py-2 px-4">{data.id}</td>
-                <td className="py-2 px-4">{data.c_name}</td>
-                <td className="py-2 px-4">{data.age}</td>
-                <td className="py-2 px-4">{data.phone}</td>
-                <td className="py-2 px-4">{data.loc}</td>
-                <td className="py-2 px-4">{data.created_at}</td>
-              </tr>
-            ))}
+            {records
+              .filter((data) => {
+                return searchQuery.toLowerCase() === ""
+                  ? data
+                  : data.c_name.toLowerCase().includes(searchQuery) ||
+                      data.loc.toLowerCase().includes(searchQuery);
+              })
+              .map((data, index) => (
+                <tr
+                  key={data.id}
+                  className={index % 2 === 0 ? "bg-gray-100" : ""}
+                >
+                  <td className="py-2 px-4 text-center font-mono">{data.id}</td>
+                  <td className="py-2 px-4 text-center font-serif">
+                    {data.c_name}
+                  </td>
+                  <td className="py-2 px-4 text-center font-mono">
+                    {data.age}
+                  </td>
+                  <td className="py-2 px-4 text-center font-mono">
+                    {data.phone}
+                  </td>
+                  <td className="py-2 px-4 text-center font-serif">
+                    {data.loc}
+                  </td>
+                  <td className="py-2 px-4 text-center font-mono">
+                    {data.created_at}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -140,7 +160,9 @@ function ShowData() {
             <a
               href="#"
               onClick={prePage}
-              className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer"
+              className={`px-3 py-1 bg-gray-200 rounded-md cursor-pointer ${
+                currentPage === 1 ? "text-gray-400" : "text-black-500"
+              }`}
             >
               Prev
             </a>
@@ -152,7 +174,7 @@ function ShowData() {
                 href="#"
                 onClick={() => Cpage(n)}
                 className={`px-3 py-1 rounded-md cursor-pointer ${
-                  currentPage === n ? "bg-blue-500 text-white" : "bg-gray-200"
+                  currentPage === n ? "bg-yellow-500 text-white" : "bg-gray-200"
                 }`}
               >
                 {n}
@@ -164,14 +186,15 @@ function ShowData() {
             <a
               href="#"
               onClick={nextPage}
-              className="px-3 py-1 bg-gray-200 rounded-md cursor-pointer"
+              className={`px-3 py-1 bg-gray-200 rounded-md cursor-pointer ${
+                currentPage === npage ? "text-gray-400" : "text-black-500"
+              }`}
             >
               Next
             </a>
           </li>
         </ul>
       </nav>
-
     </div>
   );
 }
