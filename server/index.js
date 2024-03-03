@@ -9,14 +9,12 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-// Routes
-
 // Create a record
-app.post("/todos", async (req, res) => {
+app.post("/data", async (req, res) => {
   try {
     const { c_name, age, phone, loc, created_at } = req.body;
     const newTodo = await pool.query(
-      "INSERT INTO main_table (c_name, age, phone, loc, created_at) VALUES($1, $2, $3, $4, $5) RETURNING *",
+      "INSERT INTO mock_data (c_name, age, phone, loc, created_at) VALUES($1, $2, $3, $4, $5) RETURNING *",
       [c_name, age, phone, loc, created_at]
     );
 
@@ -27,17 +25,17 @@ app.post("/todos", async (req, res) => {
 });
 
 // get all records
-app.get("/todos", async (req, res) => {
+app.get("/data", async (req, res) => {
   try {
-    const allTodos = await pool.query("SELECT * FROM main_table");
-    res.json(allTodos.rows);
+    const alldata = await pool.query("SELECT * FROM mock_data");
+    res.json(alldata.rows);
   } catch (err) {
     console.error(err.message);
   }
 });
 
 // get a record
-app.get("/todos/:id", async (req, res) => {
+app.get("/data/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const todo = await pool.query("SELECT * FROM main_table WHERE id = $1", [
@@ -50,7 +48,7 @@ app.get("/todos/:id", async (req, res) => {
 });
 
 // update a record
-app.put("/todos/:id", async (req, res) => {
+app.put("/data/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { c_name, age, phone, loc, created_at } = req.body;
@@ -67,7 +65,7 @@ app.put("/todos/:id", async (req, res) => {
 });
 
 // delete a record
-app.delete("/todos/:id", async (req, res) => {
+app.delete("/data/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const deleteTodo = await pool.query(
